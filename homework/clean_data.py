@@ -88,7 +88,7 @@ def main(input_file, output_file, n=2):
 
 if __name__ == "__main__":
     main(
-        input_file="files/input/input.txt",
+        input_file="files/input.txt",
         output_file="files/output.txt",
     )
     
