@@ -18,7 +18,7 @@ def create_key(df, n):
     columna 'text'"""
 
     df = df.copy()
-    df["key"] = df["text"]
+    df["key"] = df["raw_text"]
     df["key"] = df["key"].str.strip()
     df["key"] = df["key"].str.lower()
     df["key"] = df["key"].str.replace("-", "")
@@ -35,7 +35,7 @@ def create_key(df, n):
     #
     # - Convierta el texto a una lista de n-gramas
     df["key"] = df["key"].map(
-        lambda x: [x[t : t + n - 1 ] for t in range(len(x))],
+        lambda x: [x[t : t + n] for t in range(len(x))],
     )
     #
     # - Ordene la lista de n-gramas y remueve duplicados
@@ -54,11 +54,11 @@ def generate_cleaned_column(df):
     #
     # Este código es identico al anteior
     #
-    df = df.copy()
-    df = df.sort_values(by=["key", "text"], ascending=[True, True])
-    keys = df.drop_duplicates(subset="key", keep="first")
-    key_dict = dict(zip(keys["key"], keys["text"]))
-    df["cleaned"] = df["key"].map(key_dict)
+    keys = df.copy()
+    keys = keys.sort_values(by=["key", "raw_text"], ascending=[True, True])
+    keys = keys.drop_duplicates(subset="key", keep="first")
+    key_dict = dict(zip(keys["key"], keys["raw_text"]))
+    df["cleaned_text"] = df["key"].map(key_dict)
 
     return df
 
@@ -69,8 +69,7 @@ def save_data(df, output_file):
     # Este código es identico al anteior
     #
     df = df.copy()
-    df = df[["cleaned"]]
-    df = df.rename(columns={"cleaned": "text"})
+    df = df[["raw_text", "cleaned_text"]]
     df.to_csv(output_file, index=False)
 
 
@@ -91,5 +90,6 @@ if __name__ == "__main__":
         input_file="files/input.txt",
         output_file="files/output.txt",
     )
-    
+
+
     
